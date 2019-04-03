@@ -1,0 +1,82 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background: linear-gradient(135deg, #024959, #012027) no-repeat;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+header strong {
+  color: #fff;
+  margin-right: 10px;
+}
+
+.App {
+  overflow: hidden;
+  height: 100%;
+}
+
+.form-section {
+  padding: 90px;
+}
+
+.book-form {
+  margin: 0 auto;
+  background: #fff;
+  padding: 20px;
+  border-top: 10px solid #e74c3c;
+  height: 100%;
+}
+
+.display-books {
+  background: #fff;
+  box-shadow: 0 -9px 13px -2px rgba(0, 0, 0, 0.4);
+  padding: 50px;
+  min-height: 65vh;
+
+  transition: all ease 0.3s;
+}
+
+.show {
+  transform: translateY(0);
+}
+
+.book-form input {
+  display: block;
+  margin: 20px 0;
+}
+
+.book-form.dark-bg {
+  color: #fff;
+  background: linear-gradient(135deg, #f24c27, #190601);
+  background-size: 1px 1000px;
+}
+
+.list-item .title,
+.list-item .author {
+  flex: 1 1 30%;
+}
+
+.list-item .buttons {
+  flex: 1 1 15%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.list-item .buttons button {
+  margin-left: 10px;
+}
