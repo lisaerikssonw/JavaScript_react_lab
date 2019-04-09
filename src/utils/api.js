@@ -76,6 +76,6 @@ export const updateBook = async (id, title, author) => {
     author,
     op: 'update'
   }
-
+  
   return await sendRequest(params)
 }
