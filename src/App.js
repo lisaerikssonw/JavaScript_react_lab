@@ -24,25 +24,25 @@ class App extends Component {
   }
 
 
-  requestApiKey() {
-    const apiKey = localStorage.getItem('apiKey')
+  async requestApiKey() {
+    let apiKey = localStorage.getItem('apiKey')
 
-    if (apiKey) {
-      console.log(apiKey)
-      return apiKey
-    } else {
-      const newApiKey = 
-        fetch(`${url}requestKey`)
+    if (!apiKey) {
+      apiKey = 
+        await fetch(`${url}requestKey`)
         .then(response => response.json())
-        .then(data => data.key)
-      localStorage.setItem('apiKey', newApiKey)
-      return newApiKey
-    }
+        .then(data =>{
+          localStorage.setItem('apiKey', data.key)
+          return data.key
+        }) 
+    } 
+      return apiKey
   }
 
   componentDidMount() {
-    const apiKey = this.requestApiKey
- 
+
+    let apiKey = this.requestApiKey()
+    
     fetch(`${url}op=select&key=${apiKey}`)
       .then(request => request.json)
       .then(data => {
