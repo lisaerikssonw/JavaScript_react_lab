@@ -2,13 +2,8 @@ import React, {Component} from "react"
 import { fetchBooks } from "../../utils/api";
 
 class SubmitBook extends Component {
-    constructor() {
-        super()
-        this.state = {} 
-    }
-
-    addBook() {
-        console.log('Book added')
+    constructor(props) {
+        super(props)
     }
 
     render() {
@@ -24,6 +19,7 @@ class SubmitBook extends Component {
                     id="title"
                     aria-describedby="title"
                     placeholder="Lägg till titel"
+                    onChange={this.props.titleHandler}
                   />
   
                   <input
@@ -36,11 +32,12 @@ class SubmitBook extends Component {
                     data-gramm_id="63b74fb6-c7e4-7f0e-0c1f-438d47ac87a0"
                     data-gramm_editor="true"
                     placeholder="Lägg till författare"
+                    onChange={this.props.authorHandler}
                   />
                 </div>
                 <button
                   type="submit"
-                  onClick={this.addBook}
+                  onClick={this.props.submitBook}
                   className="btn btn-primary btn-lg btn-block"
                 >
                   Skicka
