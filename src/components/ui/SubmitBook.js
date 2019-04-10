@@ -1,11 +1,14 @@
 import React, {Component} from "react"
+import { fetchBooks } from "../../utils/api";
 
 class SubmitBook extends Component {
     constructor() {
         super()
-        this.state = {
-            
-        }
+        this.state = {} 
+    }
+
+    addBook() {
+        console.log('Book added')
     }
 
     render() {
@@ -37,6 +40,7 @@ class SubmitBook extends Component {
                 </div>
                 <button
                   type="submit"
+                  onClick={this.addBook}
                   className="btn btn-primary btn-lg btn-block"
                 >
                   Skicka

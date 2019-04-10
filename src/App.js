@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Header from './components/ui/Header/Header'
 import SubmitBook from './components/ui/SubmitBook'
+import DisplayBooks from './components/ui/DisplayBooks'
 const url = "https://www.forverkliga.se/JavaScript/api/crud.php?"
 
 class App extends Component {
@@ -10,48 +11,52 @@ class App extends Component {
     this.state = {
       books: [],
       title: '',
-      author: ''
+      author: '',
     }
 
     this.componentDidMount = this.componentDidMount.bind(this)
     this.titleHandler = this.titleHandler.bind(this)
   }
- 
+
   titleHandler(event) {
     this.setState({
       title: event.target.value
     })
   }
 
-
   async requestApiKey() {
     let apiKey = localStorage.getItem('apiKey')
 
     if (!apiKey) {
-      apiKey = 
+      apiKey =
         await fetch(`${url}requestKey`)
-        .then(response => response.json())
-        .then(data =>{
-          localStorage.setItem('apiKey', data.key)
-          return data.key
-        }) 
-    } 
-      return apiKey
+          .then(response => response.json())
+          .then(data => {
+            localStorage.setItem('apiKey', data.key)
+            return data.key
+          })
+    }
+    return apiKey
   }
 
-  componentDidMount() {
-
+  fetchBooks() {
     let apiKey = this.requestApiKey()
-    
+
     fetch(`${url}op=select&key=${apiKey}`)
       .then(request => request.json)
       .then(data => {
         console.log(data)
-          this.setState({
-            books: data
-          })
+        this.setState({
+          books: data.data
         })
-        .catch(error => console.log('error'))
+      })
+      .catch(error => console.log('error'))
+  }
+
+  componentDidMount() {
+    
+    this.fetchBooks()
+
   }
 
   componentDidUpdate() {
@@ -64,28 +69,7 @@ class App extends Component {
       <div className="App">
         <Header />
         <SubmitBook />
-        <div className="display-books">
-          <div className="container">
-            <div className="col-12">
-              <ul className="list-group">
-                <li className="list-item list-group-item d-flex align-items-center">
-                  <strong className="title">Titel</strong>
-
-                  <div className="author">Författare</div>
-
-                  <div className="buttons">
-                    <button type="button" className="btn btn-success">
-                      Editera
-                    </button>
-                    <button type="button" className="btn btn-danger">
-                      Ta bort
-                    </button>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        <DisplayBooks />
       </div>
     )
   }
