@@ -15,10 +15,12 @@ class App extends Component {
       id: ''
     }
 
-    this.componentDidMount = this.componentDidMount.bind(this)
     this.titleHandler = this.titleHandler.bind(this)
     this.authorHandler = this.authorHandler.bind(this)
     this.submitBook = this.submitBook.bind(this)
+    this.fetchBooks = this.fetchBooks.bind(this)
+    this.request = this.request.bind(this)
+
   }
 
   titleHandler(event) {
@@ -34,14 +36,20 @@ class App extends Component {
   }
 
   async submitBook(event) {
+    event.preventDefault()
     console.log('Book added')
-
     let apiKey = await this.requestApiKey()
 
-    await fetch(`${url}op=insert&key=${apiKey}&title=${this.state.title}&author=${this.state.author}`)
+    this.request(`op=insert&key=${apiKey}&title=${this.state.title}&author=${this.state.author}`, data => {
+      this.setState({
+        id: data.id
+        //TypeError: Cannot read property 'id' of undefined??
+      })
+    })
+/*     await fetch(`${url}op=insert&key=${apiKey}&title=${this.state.title}&author=${this.state.author}`)
       .then(response => response.json())
       .then(data => {
-        if(data.status === "success") {
+        if (data.status === "success") {
           this.setState({
             id: data.data.id
           })
@@ -50,16 +58,41 @@ class App extends Component {
         }
       })
       .catch(message => console.log(message))
-
-    await this.setState(prevState => {
-      const newBook = {title: this.state.title, author: this.state.author, id: this.state.id}
+ */
+    this.setState(prevState => {
+      const newBook = { title: this.state.title, author: this.state.author, id: this.state.id }
       const newList = prevState.books ? prevState.books.concat(newBook) : [newBook]
-
+      //newList.forEach(book => console.log(book))
       return {
         books: newList
       }
     })
-    
+  }
+
+  /* async deleteBook(id) {
+    let apiKey = await this.requestApiKey()
+
+    this.request(`op=delete&key=${apiKey}&id=${id}`, data => {
+      console.log("Book deleted")
+    })
+  }
+  */
+
+  request(qs, cb, limit=10) {
+    fetch(`${url}${qs}`)
+      .then(response => response.json())
+      .then(data => {
+        if(data.status === "success") {
+          if(cb) {
+            cb(data) 
+          } 
+        } else if(limit>0) {
+            this.request(qs, cb, limit-1)
+        } else {
+          console.log("Thomas hade rätt")
+        }
+      })
+      .catch(error => console.log(error))
   }
 
   async requestApiKey() {
@@ -72,7 +105,7 @@ class App extends Component {
           .then(data => {
             localStorage.setItem('apiKey', data.key)
             return data.key
-            
+
           })
     }
     return apiKey
@@ -80,19 +113,31 @@ class App extends Component {
 
   async fetchBooks() {
     let apiKey = await this.requestApiKey()
-    fetch(`${url}op=select&key=${apiKey}`)
+    
+    await this.request(`op=select&key=${apiKey}`, data => {
+      this.setState({
+        books: data.data
+      })
+    })
+
+    //this.state.books.forEach(book => console.log(book))
+
+
+    /* fetch(`${url}op=select&key=${apiKey}`)
       .then(request => request.json())
       .then(data => {
-        if(data.status === "success") {
+        if (data.status === "success") {
           this.setState({
             books: data.data
-          })    
+          })
         } else {
           console.log("Thomas hade rätt")
         }
       })
       .catch(error => console.log(error))
-  }
+      */
+  } 
+  
 
   componentDidMount() {
     this.fetchBooks()
@@ -108,12 +153,11 @@ class App extends Component {
     return (
       <div className="App">
         <Header />
-        <SubmitBook submitBook={this.submitBook} 
-        titleHandler={this.titleHandler} 
-        authorHandler={this.authorHandler}
+        <SubmitBook submitBook={this.submitBook}
+          titleHandler={this.titleHandler}
+          authorHandler={this.authorHandler}
         />
-        <DisplayBooks books={this.state.books}
-        />
+        <DisplayBooks books={this.state.books} />
       </div>
     )
   }
