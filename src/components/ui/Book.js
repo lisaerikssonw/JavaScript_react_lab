@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 
 class Book extends Component {
     constructor(props) {
@@ -7,34 +7,32 @@ class Book extends Component {
         this.state = {
             title: props.title,
             author: props.author,
-            id: props.id,
-            editMode: false
+            id: props.id
         }
     }
 
     render() {
 
-        return(
+
+        return (
             <li className="list-item list-group-item d-flex align-items-center">
-                    <strong className="title">Titel</strong>
-
-                    <div className="author">{book.author}</div>
-
-                    <div className="buttons">
-                        <button type="button"
-                            className="btn btn-success">
-                            Editera
-                    </button>
-                        <button type="button"
-                            className="btn btn-danger"
-                            //FIXA DELETEBOOK
-                            onClick={() => this.props.deleteBook(book.id)}>
-                            Ta bort
-                    </button>
-                    </div>
-                </li>
+                <strong className="title">{this.state.title}</strong>
+            <div className="author">{this.state.author}</div>
+            <div className="buttons">
+                <button type="button"
+                    className="btn btn-success"
+                    onClick={this.props.toggleEdit}>
+                    Editera
+                </button>
+                <button type="button"
+                    className="btn btn-danger"
+                    onClick={() => this.props.deleteBook(this.state.id)}>
+                    Ta bort
+                </button>
+            </div>
+            </li>
         )
-        
+
     }
 
 }

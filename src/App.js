@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Header from './components/ui/Header/Header'
 import SubmitBook from './components/ui/SubmitBook'
-import DisplayBooks from './components/ui/DisplayBooks'
+import Book from './components/ui/Book'
 const url = "https://www.forverkliga.se/JavaScript/api/crud.php?"
 
 class App extends Component {
@@ -12,7 +12,8 @@ class App extends Component {
       books: [],
       title: '',
       author: '',
-      id: ''
+      id: '',
+      editMode: false
     }
 
     this.titleHandler = this.titleHandler.bind(this)
@@ -21,6 +22,7 @@ class App extends Component {
     this.fetchBooks = this.fetchBooks.bind(this)
     this.request = this.request.bind(this)
     this.deleteBook = this.deleteBook.bind(this)
+    this.toggleEdit = this.toggleEdit.bind(this)
 
   }
 
@@ -64,6 +66,16 @@ class App extends Component {
     })
 
     this.fetchBooks()
+  }
+
+  toggleEdit() {
+    this.setState({
+        editMode: !this.state.editMode
+    })
+  }
+
+  submitEdit() {
+    this.toggleEdit()
   }
 
   request(qs, cb, limit = 10) {
@@ -119,6 +131,19 @@ class App extends Component {
   }
 
   render() {
+
+    const bookList = this.state.books.map(book => {return(
+      <Book {...book} 
+      deleteBook={this.deleteBook} 
+      key={book.id}
+      titleHandler={this.titleHandler}
+      authorHandler={this.authorHandler}
+      toggleEdit={this.toggleEdit}
+      submitEdit={this.submitEdit}
+      editMode = {this.state.editMode}
+      />
+    )})
+
     return (
       <div className="App">
         <Header />
@@ -126,12 +151,15 @@ class App extends Component {
           titleHandler={this.titleHandler}
           authorHandler={this.authorHandler}
         />
-        <DisplayBooks books={this.state.books}
-        title={this.state.title}
-        author={this.state.author}
-        id={this.state.id}
-        deleteBook={this.deleteBook}
-        />
+        <div className="display-books">
+                <div className="container">
+                    <div className="col-12">
+                        <ul className="list-group">
+                            {bookList}
+                        </ul>
+                    </div>
+                </div>
+            </div>
       </div>
     )
   }
