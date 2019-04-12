@@ -68,7 +68,7 @@ header strong {
 
 .list-item .title,
 .list-item .author {
-  flex: 1 1 30%;
+  flex: 1 1 20%;
 }
 
 .list-item .buttons {
@@ -79,4 +79,22 @@ header strong {
 
 .list-item .buttons button {
   margin-left: 10px;
+}
+
+.btn {
+  color:white;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.footer-container {
+  list-style: none;
+}
+
+.changeColor {
+  color: white;
 }
