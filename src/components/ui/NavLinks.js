@@ -10,7 +10,7 @@ class NavLinks extends Component {
           <Link href="https://www.forverkliga.se/JavaScript/api/crud.php">
             API Docs
           </Link>
-          <button type="button" className="btn" onClick={this.props.getNewApiKey}>Get new API key</button>
+          <Link href="" onClick={this.props.getNewApiKey}>Get new API key</Link>
         </Nav>
 
         )

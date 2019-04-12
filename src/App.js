@@ -159,11 +159,11 @@ getNewApiKey() {
     return (
       <div className="App">
         <Header getNewApiKey={this.getNewApiKey} />
-        <UserInfo message={this.state.message} count={this.state.count} />
         <SubmitBook submitBook={this.submitBook}
           titleHandler={this.titleHandler}
           authorHandler={this.authorHandler}
         />
+        <UserInfo message={this.state.message} count={this.state.count} />
         <div className="display-books">
                 <div className="container">
                     <div className="col-12">

@@ -98,3 +98,10 @@ header strong {
 .changeColor {
   color: white;
 }
+
+.userInfo {
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
