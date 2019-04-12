@@ -20,6 +20,7 @@ class App extends Component {
     this.submitBook = this.submitBook.bind(this)
     this.fetchBooks = this.fetchBooks.bind(this)
     this.request = this.request.bind(this)
+    this.deleteBook = this.deleteBook.bind(this)
 
   }
 
@@ -43,51 +44,38 @@ class App extends Component {
     this.request(`op=insert&key=${apiKey}&title=${this.state.title}&author=${this.state.author}`, data => {
       this.setState({
         id: data.id
-        //TypeError: Cannot read property 'id' of undefined??
       })
     })
-/*     await fetch(`${url}op=insert&key=${apiKey}&title=${this.state.title}&author=${this.state.author}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === "success") {
-          this.setState({
-            id: data.data.id
-          })
-        } else {
-          console.log('Error')
-        }
-      })
-      .catch(message => console.log(message))
- */
+
     this.setState(prevState => {
       const newBook = { title: this.state.title, author: this.state.author, id: this.state.id }
       const newList = prevState.books ? prevState.books.concat(newBook) : [newBook]
-      //newList.forEach(book => console.log(book))
       return {
         books: newList
       }
     })
   }
 
-  /* async deleteBook(id) {
+  async deleteBook(id) {
     let apiKey = await this.requestApiKey()
 
-    this.request(`op=delete&key=${apiKey}&id=${id}`, data => {
+    await this.request(`op=delete&key=${apiKey}&id=${id}`, data => {
       console.log("Book deleted")
     })
-  }
-  */
 
-  request(qs, cb, limit=10) {
+    this.fetchBooks()
+  }
+
+  request(qs, cb, limit = 10) {
     fetch(`${url}${qs}`)
       .then(response => response.json())
       .then(data => {
-        if(data.status === "success") {
-          if(cb) {
-            cb(data) 
-          } 
-        } else if(limit>0) {
-            this.request(qs, cb, limit-1)
+        if (data.status === "success") {
+          if (cb) {
+            cb(data)
+          }
+        } else if (limit > 0) {
+          this.request(qs, cb, limit - 1)
         } else {
           console.log("Thomas hade rätt")
         }
@@ -107,37 +95,20 @@ class App extends Component {
             return data.key
 
           })
+          .catch(error => console.log(error))
     }
     return apiKey
   }
 
   async fetchBooks() {
     let apiKey = await this.requestApiKey()
-    
+
     await this.request(`op=select&key=${apiKey}`, data => {
       this.setState({
         books: data.data
       })
     })
-
-    //this.state.books.forEach(book => console.log(book))
-
-
-    /* fetch(`${url}op=select&key=${apiKey}`)
-      .then(request => request.json())
-      .then(data => {
-        if (data.status === "success") {
-          this.setState({
-            books: data.data
-          })
-        } else {
-          console.log("Thomas hade rätt")
-        }
-      })
-      .catch(error => console.log(error))
-      */
-  } 
-  
+  }
 
   componentDidMount() {
     this.fetchBooks()
@@ -145,11 +116,9 @@ class App extends Component {
 
   componentDidUpdate() {
     console.log(this.state.title)
-    //Skriver ut medan state ändras.
   }
 
   render() {
-    console.log(this.state.books)
     return (
       <div className="App">
         <Header />
@@ -157,7 +126,12 @@ class App extends Component {
           titleHandler={this.titleHandler}
           authorHandler={this.authorHandler}
         />
-        <DisplayBooks books={this.state.books} />
+        <DisplayBooks books={this.state.books}
+        title={this.state.title}
+        author={this.state.author}
+        id={this.state.id}
+        deleteBook={this.deleteBook}
+        />
       </div>
     )
   }
