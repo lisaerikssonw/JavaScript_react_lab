@@ -7,7 +7,6 @@ class Book extends Component {
         this.state = {
             title: props.title,
             author: props.author,
-            id: props.id,
             editMode: false
         }
 
@@ -38,7 +37,7 @@ class Book extends Component {
     async submitEdit() {
         const apiKey = await this.props.requestApiKey()
     
-        await this.props.request(`op=update&key=${apiKey}&id=${this.state.id}&title=${this.state.title}
+        await this.props.request(`op=update&key=${apiKey}&id=${this.props.id}&title=${this.state.title}
         &author=${this.state.author}`, data => {
             console.log("Updated")
           })
@@ -75,7 +74,7 @@ class Book extends Component {
                 }
                 <button type="button"
                     className="btn btn-danger"
-                    onClick={() => this.props.deleteBook(this.state.id)}>
+                    onClick={() => this.props.deleteBook(this.props.id)}>
                     Ta bort
                 </button>
             </div>

@@ -27,7 +27,7 @@ class App extends Component {
     this.fetchBooks = this.fetchBooks.bind(this)
     this.request = this.request.bind(this)
     this.deleteBook = this.deleteBook.bind(this)
-
+    this.getNewApiKey = this.getNewApiKey.bind(this)
   }
 
   titleHandler(event) {
@@ -46,35 +46,28 @@ class App extends Component {
     event.preventDefault()
     let apiKey = await this.requestApiKey()
 
-    this.request(`op=insert&key=${apiKey}&title=${this.state.title}&author=${this.state.author}`, data => {
+    await this.request(`op=insert&key=${apiKey}&title=${this.state.title}&author=${this.state.author}`, data => {
       this.setState({
         message: 'Book added!',
-        id: data.id
+        id: data.id,
+        title: this.state.title,
+        author: this.state.author,
+        books: [...this.state.books, { title: this.state.title, author: this.state.author, id: data.id }]
       })
-      console.log(this.state.id)
     })
-
-    this.setState(prevState => {
-      const newBook = { title: this.state.title, author: this.state.author, id: this.state.id }
-      const newList = prevState.books ? prevState.books.concat(newBook) : [newBook]
-      return {
-        books: newList
-      }
-    })
+    
   }
 
   async deleteBook(id) {
-    let apiKey = await this.requestApiKey()
+    const apiKey = await this.requestApiKey()
 
     await this.request(`op=delete&key=${apiKey}&id=${id}`, data => {
       this.setState({
         message: 'Book deleted!',
+        books: this.state.books.filter(book => book.id !== id)
       })
     })
-
-    this.fetchBooks()
   }
-
 
   request(qs, cb, limit = 10) {
     fetch(`${url}${qs}`)
@@ -112,9 +105,9 @@ class App extends Component {
   }
 
   
-getNewApiKey() {
+async getNewApiKey() {
 
-  fetch(`${url}requestKey`)
+  await fetch(`${url}requestKey`)
     .then(response => response.json())
     .then(data => {
       if (data.status === "success") {
@@ -124,6 +117,8 @@ getNewApiKey() {
       }
     })
     .catch(error => console.log(error))
+
+    this.fetchBooks()
 }
 
   async fetchBooks() {
@@ -141,18 +136,14 @@ getNewApiKey() {
     this.fetchBooks()
   }
 
-  componentDidUpdate() {
-    console.log(this.state.title)
-  }
-
   render() {
 
     const bookList = this.state.books.map(book => {return(
-      <Book {...book} 
-      deleteBook={this.deleteBook} 
+      <Book {...book}  
       key={book.id}
       requestApiKey={this.requestApiKey}
       request={this.request}
+      deleteBook={this.deleteBook}
       />
     )})
 
