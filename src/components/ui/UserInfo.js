@@ -1,17 +1,15 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-class UserInfo extends Component {
+// Här hade en functional component kommit väl till pass
+const UserInfo = props => (
+    <div className="userInfo">
+        <article>
+            <strong>{props.message}</strong>
+            {/* Använd template-string för att konkatenera strängar */}
+            <p>{`Attempts: ${props.count}`}</p>
+        </article>
+    </div>
+)
 
-    render() {
-        return (
-            <div className="userInfo">
-                <article>
-                    <strong>{this.props.message}</strong>
-                    <p>{"Attempts: " + this.props.count}</p>
-                </article>
-            </div>
-        )
-    }
-}
 
 export default UserInfo

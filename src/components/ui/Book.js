@@ -37,12 +37,12 @@ class Book extends Component {
     async submitEdit() {
         const apiKey = await this.props.requestApiKey()
     
-        await this.props.request(`op=update&key=${apiKey}&id=${this.props.id}&title=${this.state.title}
-        &author=${this.state.author}`, data => {
+       this.props.request(`op=update&key=${apiKey}&id=${this.props.id}&title=${this.state.title}
+        &author=${this.state.author}`, () => {
             console.log("Updated")
-          })
+        })
 
-          this.toggleEdit()
+        this.toggleEdit()
     }
 
     render() {

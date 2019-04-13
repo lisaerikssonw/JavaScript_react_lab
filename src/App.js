@@ -15,7 +15,6 @@ class App extends Component {
       books: [],
       title: '',
       author: '',
-      id: '',
       message: '',
       count: ''
 
@@ -46,12 +45,12 @@ class App extends Component {
     event.preventDefault()
     let apiKey = await this.requestApiKey()
 
-    await this.request(`op=insert&key=${apiKey}&title=${this.state.title}&author=${this.state.author}`, data => {
+    // Behöver inte använda await här eftersom callback körs när request är färdig
+    // Att uppdatera state för title och author blir också överflödigt eftersom staten är redan up to date
+    // Att lägga till id till state fyller inte heller någon direkt funktion - räcker med att id finns med i boken som läggs till i listan
+    this.request(`op=insert&key=${apiKey}&title=${this.state.title}&author=${this.state.author}`, data => {
       this.setState({
         message: 'Book added!',
-        id: data.id,
-        title: this.state.title,
-        author: this.state.author,
         books: [...this.state.books, { title: this.state.title, author: this.state.author, id: data.id }]
       })
     })
@@ -61,7 +60,8 @@ class App extends Component {
   async deleteBook(id) {
     const apiKey = await this.requestApiKey()
 
-    await this.request(`op=delete&key=${apiKey}&id=${id}`, data => {
+    // Behöver inte använda await här eftersom callback körs när request är färdig
+    this.request(`op=delete&key=${apiKey}&id=${id}`, () => {
       this.setState({
         message: 'Book deleted!',
         books: this.state.books.filter(book => book.id !== id)
@@ -104,27 +104,28 @@ class App extends Component {
     return apiKey
   }
 
-  
-async getNewApiKey() {
-
-  await fetch(`${url}requestKey`)
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === "success") {
-        localStorage.setItem('apiKey', data.key)
-      } else {
-        console.log("Thomas hade rätt")
-      }
-    })
-    .catch(error => console.log(error))
-
-    this.fetchBooks()
-}
+  // Finns ingen anledning att köra async här eftersom fetch inte returnerar någonting
+  getNewApiKey() {
+    fetch(`${url}requestKey`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "success") {
+          localStorage.setItem('apiKey', data.key)
+          // Hämta lista på nytt här istället
+          this.fetchBooks()
+        } else {
+          console.log("Thomas hade rätt")
+        }
+      })
+      .catch(error => console.log(error))
+  }
 
   async fetchBooks() {
     let apiKey = await this.requestApiKey()
 
-    await this.request(`op=select&key=${apiKey}`, data => {
+    // Här behöver ni inte vänta in någonting heller alltså blir await överflödig här
+    
+    this.request(`op=select&key=${apiKey}`, data => {
       this.setState({
         books: data.data,
         message: "The books were successfully fetched"
